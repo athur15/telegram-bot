@@ -1,26 +1,24 @@
-name: Run Telegram Bot
+name: Telegram Notify
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 */2 * * *"
 
 jobs:
-  run:
+  send_message:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.12"
 
-      - name: Install requests
-        run: pip install requests
+      - run: pip install -r requirements.txt
 
-      - name: Run bot
+      - run: python bot.py
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-        run: python bot.py
