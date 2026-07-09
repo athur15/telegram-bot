@@ -3,7 +3,7 @@ name: Telegram Notify
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0,2,16,18,20,22 * * *"
+   - cron: "*/5 * * * *"
 
 jobs:
   send_message:
