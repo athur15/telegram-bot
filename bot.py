@@ -1,18 +1,15 @@
 import os
+import sys
 import requests
-from datetime import datetime, timedelta, timezone
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
-vn_time = datetime.now(timezone(timedelta(hours=7)))
-current_time = vn_time.strftime("%H:%M")
+if not BOT_TOKEN:
+    raise RuntimeError("Không đọc được BOT_TOKEN")
 
-allowed_times = ["23:00", "01:00", "03:00", "05:00", "07:00", "09:00"]
-
-if current_time not in allowed_times:
-    print(f"Not sending. Current VN time: {current_time}")
-    exit()
+if not CHAT_ID:
+    raise RuntimeError("Không đọc được CHAT_ID")
 
 message = """🔔 Đến giờ kiểm tra trạng thái kênh.
 
@@ -26,7 +23,12 @@ response = requests.post(
     data={
         "chat_id": CHAT_ID,
         "text": message
-    }
+    },
+    timeout=30
 )
 
-print(response.text)
+print("HTTP status:", response.status_code)
+print("Telegram response:", response.text)
+
+if not response.ok:
+    sys.exit(1)
